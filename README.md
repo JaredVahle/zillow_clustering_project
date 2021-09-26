@@ -4,7 +4,7 @@
 A brief description of what this project does and who it's for
 
 <!-- Add banner here -->
-![Banner](https://github.com/brandon-sharpe/Zillow-Clustering-Project/blob/main/Zillow.gif)
+![Banner](https://webassets.inman.com/wp-content/uploads/2014/03/zillow-logo-use-this-one.png)
 
 # Zillow Clustering Project
 
