@@ -1,114 +1,190 @@
-# Zillow Regression Project
 
-### Executive Summary
-I was able to create a regression model that beat out the baseline for predicting homes in the california area. It preformed with an R^2 value of 0.3859 and an RMSE on out of sample data of 294674.89
+# Project Title
 
-##### Top Predictors:
-- Square Footage
-- Number of bathrooms
-- Number of bedrooms
-##### Model Information:
-- Type: Linear regression
-- Alpha = 1
-- RMSE: 294683.58
-- R^2: 0.3859
-##### Background Info:
-- Single unit properties
-- Data gathered was from 2017
-- Counties: Los Angeles, Orange, Ventura
-- Only entries with a latitude and longitude
-##### Our main predictors for house prices
+A brief description of what this project does and who it's for
+
+<!-- Add banner here -->
+![Banner](https://github.com/brandon-sharpe/Zillow-Clustering-Project/blob/main/Zillow.gif)
+
+# Zillow Clustering Project
+
+<!-- Add buttons here -->
+
+![GitHub release (latest by date including pre-releases)](https://img.shields.io/badge/release-draft-yellow)
+![GitHub last commit](https://img.shields.io/badge/last%20commit-Sep%202021-green)
+
+<!-- Describe your project in brief -->
+The Zestimate is a powerful tool used by zillow to predict the final sale price of realestate. My goal for this project is to identify whats driving error between the Zestimate and the final sale prices. To accomplish this goal I will be utilizing clustering and regression models. I will present my findings via a notebook walkthrough to my datascience team. 
 
 
-##### Linear Regression Model vs Baseline
+
+# Executive Summary
+<!-- Add a demo for your project -->
+
+This is a place holder for when I have key takeaways and fingings
+
+# Table of contents
+<!-- Add a table of contents for your project -->
+
+- [Project Title](#project-title)
+- [Executive Summary](#executive-summary)
+- [Table of contents](#table-of-contents)
+- [Data Dictionary](#data-dictionary)
+- [Data Science Pipeline](#data-science-pipline)
+    - [Acquire](#acquire)
+    - [Prepare](#prepare)
+    - [Explore](#explore)
+    - [Model](#model)
+    - [Evaluate](#evaluate)
+- [Conclusion](#conclusion)
+- [Given More Time](#given-more-time)
+- [Recreate This Project](#recreate-this-project)
+- [Footer](#footer)
+
+# Data Dictionary
+[(Back to top)](#table-of-contents)
+<!-- Drop that sweet sweet dictionary here-->
+
+| Feature                    | Datatype                | Definition   |
+|:---------------------------|:------------------------|:-------------|
+| parcelid| 55513 non-null: int64   |individual id for unique properties|
+| baths| 55513 non-null: float64 |# of bathrooms a property has|
+| beds| 55513 non-null: float64 |# of bedrooms a property has|
+| sqft| 55513 non-null: float64 |calculated square footage of home|
+| latitude| 55513 non-null: float64 |where the porperty is located in refrence to latitude|
+| longitude| 55513 non-null: float64 |where the porperty is located in refrence to  longitude|
+| lotsizesquarefeet| 55513 non-null: float64 |the square footage of the land the propety resides on|
+| regionidcity| 55513 non-null: object  |unique identifier for cities the property is in|
+| regionidzip| 55513 non-null: object  |uniques identifier for the zip code the propert resides in|
+| year_built| 55513 non-null: float64 |year the property was built|
+| structuretaxvaluedollarcnt| 55513 non-null: float64 |the estimated tax value of the property itself|
+| tax_value| 55513 non-null: float64 |the estimated tax value of the property|
+| landtaxvaluedollarcnt| 55513 non-null: float64 |the estimated tax value of the land the property is on|
+| tax_amount| 55513 non-null: float64 |how much the owner of the property must pay this year|
+| logerror| 55513 non-null: float64 |the target of this project (error produced in predictions)|
+| transactiondate| 55513 non-null: object  |date property was sold|
+| propertylandusedesc| 55513 non-null: object  |what the property is listed as ex.(Single family)|
+| LA| 55513 non-null: uint8   |whether or not the propert resides in LA county|
+| Orange| 55513 non-null: uint8   |whether or not the propert resides in Orange county|
+| Ventura| 55513 non-null: uint8   |whether or not the propert resides in Ventura county|
+| county| 55513 non-null: object  |The county the resident resides in|
+| taxrate| 55513 non-null: float64 |gives the tax rate for each property|
+| structure_dollar_per_sqft| 55513 non-null: float64 |gives the structures cost per square foot|
+| land_dollar_per_sqft| 55513 non-null: float64 |gives the land cost per square foot|
+
+# Data Science Pipeline
+[(Back to top)](#table-of-contents)
+<!-- Describe your Data Science Pipeline process -->
+Following best practices I documented my progress throughout the project and will provide quick summaries and thoughts here. For a further deep dive visit my (enter explore notebook here) & (enter final notebook here)
+
+### Acquire
+[(Back to top)](#table-of-contents)
+<!-- Describe your acquire process -->
+The data was acquired from the Codeup MySQL server using the zillow database. I pulled every property from the properties_2017 table (later in prepare I will filter this down further) and joined the following tables:
+
+- airconditioningtype (for labeling purposes)
+- architecturalstyletype (for labeling purposes)
+- buildingclasstype (for labeling purposes)
+- heatingorsystemtype (for labeling purposes)
+- predictions_2017 (for logerror which will be our target)(( I also filtered by transaction date and parcel id to handle duplicates))
+
+My goal with this acquisition was to give me as much data as possible moving foward.
+At this point our data has
+* *77614 rows*
+* *74 columns*
+
+This can all be found in my acquire.py file in my github
+
+### Prepare
+[(Back to top)](#table-of-contents)
+<!-- Describe your prepare process -->
+Performed the following on my acquired data.
+
+- dropped null values from columns and rows which had less than 50% of the values.
+- dropped all data from properties that where not single value homes
+    - I quantified single family homes as properties with a propertylandusetypeid of:
+        - 261	Single Family Residential
+        - 262	Rural Residence
+        - 263	Mobile Home
+        - 264	Townhouse
+        - 265	Cluster Home
+        - 268	Row House
+        - 273	Bungalow
+        - 275	Manufactured, Modular, Prefabricated Homes
+        - 276	Patio Home
+        - 279	Inferred Single Family Residential
+- dropped the duplicated columns pulled over from the sql inquiry
+- removed outliers by upper and lower iqr fences from
+    - calculatedfinishedsquarefeet
+    - bedroomcnt
+    - bathroomcnt
+- Further removed outliers manually with the following conditions
+    - bathroom count or bedroom count greater than 6 
+    - bathroom coutnt or bedroom count less than 1 
+    - properties with greater than 15 acres
+    - properties with a square footage above 10,000
+- Drops columns that have no use
+    - id because its a usless and duplicated
+    - heatingorsystemtypeid because it was missing about 20k values to much to fill
+    - heatingorsystemdesc because it was missing about 20k values to much to fill
+    - propertylandusetypeid is useless to me after the dropping irrelevant data earlier
+    - buildingqualitytypeid because it was missing about 20k values to much to fill
+    - rawcensustractandblock useless data to me
+    - unitcnt is useless to me after the dropping irrelevant data earlier
+    - propertyzoningdesc because it was missing about 20k values to much to fill
+    - censustractandblock isn't useful to me
+    - calculatedbathnbr data is inconsistent 
+    - finishedsquarefeet12 calculatedsquarefeet is a better metric
+    - fullbathcnt redundant to bathroom count
+    - assessmentyear values are all 2016
+    - propertylandusetypeid because the data was filtered already. 
+    - roomcnt because it is inconsistent with data
+- Created boolean columns for county
+- Replace fips with county column for exploration purposes.
+- Filled null values in the following columns
+    - year
+    - regionidcity with mode (want to possibly use this as a feature to determine price variation between cities)
+    - regionidzip with mode (same as above possibly more accurate than fips)
+- Dropped remaining null values
+-Created an Acres column. (Im assuming property size is relevant in log error, further exploration is needed.)
+- Renamed several columns for readability, may update more later.
+
+At this point our data has
+* *55513 rows*
+* *22 columns*
+
+We will now split our data into train, validate, and split.
+
+Time to explore
 
 
-## Project Description
-- I will be running zillow data through the data science pipeline.*****************
 
-## Project Goals
-******************
+### Explore
+[(Back to top)](#table-of-contents)
+<!-- Describe your explore process -->
 
-## Buisness Goals
-************
+### Model
+[(Back to top)](#table-of-contents)
+<!-- Describe your modeling process -->
 
-## Audience
-- Data science team.
+### Evaluate
+[(Back to top)](#table-of-contents)
+<!-- Describe your evaluation process -->
 
-## Project Deliverables
-********************
 
-## Project Context
-- Im using the zillow dataset from the codeup sql database, I am using the 2017 dataset, and filtering for the ("hot") months for selling between "2017-05-01" and "2017-08-31", and I am also selection for single-unit properties.
-- This dataset originally contained 62 columns and 38619 rows after all tables were joined together.
-- after cleaning the dataset we are left with 7 columns and 37928
+# Conclusion
+[(Back to top)](#table-of-contents)
+<!-- Wrap up with conclusions and takeaways -->
 
-## Data Dictionary
-|Target|Datatype|Definition|
-|:-------|:--------|:----------|
-|tax_value|dtype('Float64')|Gives the home value after tax|
 
-|Feature|Datatype|Definition|
-|:-------|:--------|:----------|
-|sqft|dtype('Float64')|The total square footage of the house|
-|bathrooms|dtype('Float64')|The number of bathrooms|
-|bedrooms|dtype('Float64')|The number of bedrooms|
-|year_built|dtype('Float64')|The year the house was built|
-|tax_amount|dtype('Float64')|The amount that was paid in tax|
-|fips|dtype('Float64')|Indentifies geographic areas|
-|lot_size_sqft|dtype('Float64')|Gives total square footage of the lot|
+# Given More Time
+[(Back to top)](#table-of-contents)
+<!-- LET THEM KNOW WHAT YOU WISH YOU COULD HAVE DONE-->
 
-## Hypotheses
-### Alpha
-- α = .05
+# Recreate This Project
+[(Back to top)](#table-of-contents)
+<!-- How can they do what you do?-->
 
-******************
-## Data Science Pipeline
-#### Planning
-- Make a README.md that will hold all of the project details including a data dictionary, key finding, initial hypotheses, and explain how my process can be replicated
-- Create a MVP, originally and work through the iterative process of making improvements to that MVP.
-- Make hypotheses that are tested though statistical analysis.
-- Create visualizations throughout the process both in the explore stage and visualizing my findings after modeling.
-#### Acquire
-- Create an acquire.py that will take the data from sql and put it into a pandas dataframe. I saved the zillow data to a .csv for easier access
-#### Prepare
-- Create a prepare.py that will clean and remove outliers from the data.
-- While cleaning the data I removed any outliers that fell far outside of the expected for square footage, bathrooms, bedrooms, and tax value.
-#### Explore
-- Awnser my initial hypotheses that was asked in my planning phase, and test those hypotheses using statistical tests, either accepting or rejecting the null hypothesis.
-- Continue using statistical testing and visualizations to discover variable relationships in the data, and attempt to understand "how the data works".
-- Summarize my conclusions giving clear awnsers to the questions I posed in the planning stage and summarize any takeaways that might be useful.
-#### Modeling and Evaluation
-- Train and evaluate  models comparing those models to the baseline on different evaluation metrics, but focusing on root mean squared error.
-- Validate the models and choose the best model that was found in the validation phase.
-- Test the best model found and summarize the performance and document the results, and visualize those results.
-#### Delivery
-************************
-
-## Modules
-
-#### acquire.py
-- Acquires the data from the CodeUp SQL database and puts the table into a pandas dataframe
-#### prepare.py
-- Cleans my data and gets it ready for use in modeling and explore.
-#### wrangle.py
-- Combines my acquire and prepare into one easy to call function.
-#### explore.py
-- Contains functions that I used to help visualize the data.
-
-## Project Reproduction
-- Random state or seed = **174**, and is used in my models and my split functions.
-- In replication making use of the user defined function, in cunjunction with my documented process, and presaved models should give a good guide.The functions that will make the process faster.
-- Create and use your own env file that connects you to the sql database.
-- Run the clustering_zillow_final jupyter notebook with all the .py files.
-
-## Conclusion
-
-### Key takeaways
-
-### Model takeaways
-
-### Moving forward
-
-##### If given more time
-
+# Footer
+[(Back to top)](#table-of-contents)
+<!-- LET THEM KNOW WHO YOU ARE (linkedin links) close with a joke. -->
