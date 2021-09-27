@@ -6,6 +6,7 @@ import numpy as np
 from scipy import stats
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.cluster import KMeans
+import sklearn.feature_selection
 
 def zillow_heatmap(df):
     '''
@@ -204,13 +205,12 @@ def create_cluster(df, X, k):
     centroids = pd.DataFrame(scaler.inverse_transform(kmeans.cluster_centers_), columns=X_scaled.columns)
     return df, X_scaled, scaler, kmeans, centroids
 
-def create_cluster_elken(df, X, k):
+def create_cluster_elkan(df, X, k):
     
     """ Takes in df, X (dataframe with variables you want to cluster on) and k
     # It scales the X, calcuates the clusters and return train (with clusters), the Scaled dataframe,
     #the scaler and kmeans object and unscaled centroids as a dataframe"""
     'Credit to annah vu'
-    
     scaler = MinMaxScaler(copy=True).fit(X)
     X_scaled = pd.DataFrame(scaler.transform(X), columns=X.columns.values).set_index([X.index.values])
     kmeans = KMeans(n_clusters = k, algorithm = "elkan", random_state = 174)
@@ -220,3 +220,31 @@ def create_cluster_elken(df, X, k):
     df['cluster'] = 'cluster_' + df.cluster.astype(str)
     centroids = pd.DataFrame(scaler.inverse_transform(kmeans.cluster_centers_), columns=X_scaled.columns)
     return df, X_scaled, scaler, kmeans, centroids
+
+def select_kbest(X, y, k):
+    # make the object
+    kbest = sklearn.feature_selection.SelectKBest(
+        sklearn.feature_selection.f_regression,
+        k=k)
+
+    # fit the object
+    kbest.fit(X, y)
+    
+    # use the object (.get_support() is that array of booleans to filter the list of column names)
+    return X.columns[kbest.get_support()].tolist()
+
+def select_rfe(X, y, k):
+    # make the thing
+    lm = sklearn.linear_model.LinearRegression()
+    rfe = sklearn.feature_selection.RFE(lm, n_features_to_select=k)
+
+    # Fit the thing
+    rfe.fit(X, y)
+    
+    # use the thing
+    features_to_use = X.columns[rfe.support_].tolist()
+    
+    # we need to send show_feature_rankings a trained/fit RFE object
+    all_rankings = show_features_rankings(X, rfe)
+    
+    return features_to_use, all_rankings
