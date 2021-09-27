@@ -148,11 +148,6 @@ def outlier_function(df, cols, k):
         df = df[(df[col] < upper_bound) & (df[col] > lower_bound)]
     return df
 
-def get_mall_customers(sql):
-    url = get_db_url('mall_customers')
-    mall_df = pd.read_sql(sql, url, index_col='customer_id')
-    return mall_df
-
 
 def train_validate_test_split(df):
     train_and_validate, test = train_test_split(df, train_size=0.8, random_state=123)
@@ -160,25 +155,6 @@ def train_validate_test_split(df):
     return train, validate, test
 
 
-def wrangle_mall_df():
-
-    # acquire data
-    sql = 'select * from customers'
-
-
-    # acquire data from SQL server
-    mall_df = get_mall_customers(sql)
-
-    # handle outliers
-    mall_df = outlier_function(mall_df, ['age', 'spending_score', 'annual_income'], 1.5)
-
-    # get dummy for gender column
-    dummy_df = pd.get_dummies(mall_df.gender, drop_first=True)
-    mall_df = pd.concat([mall_df, dummy_df], axis=1).drop(columns = ['gender'])
-
-    train, validate, test = train_validate_test_split(mall_df)
-
-    return min_max_scaler(train, validate, test)
 
 def nulls_by_col(df):
     num_missing = df.isnull().sum()

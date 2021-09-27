@@ -1,7 +1,7 @@
 
-# Project Title
+# Beating the Zestimate
 
-A brief description of what this project does and who it's for
+This project is for my data science team, I am trying to create a model that will beat out the zillows Zestimate tool.
 
 <!-- Add banner here -->
 ![Banner](https://webassets.inman.com/wp-content/uploads/2014/03/zillow-logo-use-this-one.png)
@@ -118,11 +118,13 @@ Performed the following on my acquired data.
     - calculatedfinishedsquarefeet
     - bedroomcnt
     - bathroomcnt
+    - taxvaluedollarcnt
+    - calculatedfinishedsquarefeet
 - Further removed outliers manually with the following conditions
-    - bathroom count or bedroom count greater than 6 
+    - bathroom count or bedroom count greater than 7
     - bathroom coutnt or bedroom count less than 1 
-    - properties with greater than 15 acres
-    - properties with a square footage above 10,000
+    - properties with greater than 200000 square feet for lot size
+    - properties with a square footage above 8,000
 - Drops columns that have no use
     - id because its a usless and duplicated
     - heatingorsystemtypeid because it was missing about 20k values to much to fill
@@ -139,21 +141,26 @@ Performed the following on my acquired data.
     - assessmentyear values are all 2016
     - propertylandusetypeid because the data was filtered already. 
     - roomcnt because it is inconsistent with data
+    - county because we already created dummy variables to enumerate it.
 - Created boolean columns for county
 - Replace fips with county column for exploration purposes.
+- Removed lot sizes of over 200000, when working witht he data I found these values suspicious and dont believe they will be useful.
 - Filled null values in the following columns
-    - year
-    - regionidcity with mode (want to possibly use this as a feature to determine price variation between cities)
-    - regionidzip with mode (same as above possibly more accurate than fips)
+    - year built (filled nulls with 2017)
+    - lotsizesquarefeet (filled nulls with median ie. 7313)
+    - buildingqualitytypeid (filled nulls with most common ie. 6)
 - Dropped remaining null values
--Created an Acres column. (Im assuming property size is relevant in log error, further exploration is needed.)
-- Renamed several columns for readability, may update more later.
+- Created a column for tax value that gives a percentage tax rate on the property
+- Created a column for structure cost per square foot
+- Created a column for land cost per square foot
+- Renamed several columns for readability.
 
 At this point our data has
-* *55513 rows*
-* *22 columns*
+* *57889 rows*
+* *25 columns*
 
 We will now split our data into train, validate, and split.
+- Split the data into 60% train, 20% validate, 20% test
 
 Time to explore
 

@@ -87,7 +87,6 @@ def handle_outliers(df, col):
     return df_out
 
 
-
 def nulls_by_col(df):
     num_missing = df.isnull().sum()
     print(type(num_missing))
@@ -105,7 +104,32 @@ def nulls_by_row(df):
     .rename(index=str, columns={'index': 'num_rows'}).reset_index()
     return rows_missing
     
-#Acquire mall data
-def get_mallcustomer_data():
-    df = pd.read_sql('SELECT * FROM customers;', get_connection('mall_customers'))
-    return df.set_index('customer_id')
+def handle_missing_values(df, prop_required_column = .5, prop_required_row = .70):
+	#function that will drop rows or columns based on the percent of values that are missing:\
+	#handle_missing_values(df, prop_required_column, prop_required_row
+    threshold = int(round(prop_required_column*len(df.index),0))
+    df = df.dropna(axis=1, thresh=threshold)
+    threshold = int(round(prop_required_row*len(df.columns),0))
+    df.dropna(axis=0, thresh=threshold, inplace=True)
+    return df
+
+def nulls_by_col(df):
+    num_missing = df.isnull().sum()
+    rows = df.shape[0]
+    prcnt_miss = num_missing / rows * 100
+    cols_missing = pd.DataFrame({'num_rows_missing': num_missing, 'percent_rows_missing': prcnt_miss})
+    return cols_missing
+
+def nulls_by_row(df):
+    num_missing = df.isnull().sum(axis=1)
+    prcnt_miss = num_missing / df.shape[1] * 100
+    rows_missing = pd.DataFrame({'num_cols_missing': num_missing, 'percent_cols_missing': prcnt_miss})\
+    .reset_index()\
+    .groupby(['num_cols_missing', 'percent_cols_missing']).count()\
+    .rename(index=str, columns={'customer_id': 'num_rows'}).reset_index()
+    return rows_missing
+
+def remove_columns(df, cols_to_remove):
+	#remove columns not needed
+    df = df.drop(columns=cols_to_remove)
+    return df
