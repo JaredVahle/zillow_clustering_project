@@ -72,6 +72,9 @@ This is a place holder for when I have key takeaways and fingings
 | structure_dollar_per_sqft| 55513 non-null: float64 |gives the structures cost per square foot|
 | land_dollar_per_sqft| 55513 non-null: float64 |gives the land cost per square foot|
 
+# Link to Trello Board
+https://trello.com/b/nvbynjZ6/clustering-zillow-data
+
 # Data Science Pipeline
 [(Back to top)](#table-of-contents)
 <!-- Describe your Data Science Pipeline process -->
