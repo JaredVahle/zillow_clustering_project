@@ -21,7 +21,33 @@ The Zestimate is a powerful tool used by zillow to predict the final sale price 
 # Executive Summary
 <!-- Add a demo for your project -->
 
-This is a place holder for when I have key takeaways and fingings
+### Goals
+- Work through datascience pipline for zillow data, documenting the process.
+- Use clustering and regression modeling to find clusters of houses that will imporove our model.
+- Find drivers for log error in the zestimate.
+
+### Statistical testing:
+I found that Location bedrooms and bathrooms all have a relationship with log error.
+
+I also found that the log error was different when comparing large units to small units, and when comparing large lots to small lots.
+### Clustering:
+- The cluster of longitude and latited was not effective in predicting logerror
+- The cluster of longitude latitude and square footage was not effective in predicting logerror
+- The cluster of bedroom bathroom and tax value was not effective in predicting logerror
+
+I cannot accuratly predict the log error in this amount of time, my model came just short of the baseline. I was able to find some key incites about the data including several statistically significant finding on variables relationships to log error.
+
+Model features: **bathrooms, bedrooms, square_footage, house_basics_cluster, loc_sqft_cluster**
+
+**My models performance was almost identical to the baseline**
+
+### Takeaways/keypoints
+- It seems like location plays a factor some locations might have inflated or deflated housing markets.
+- The zestimate seems to slightly overvalue smaller houses/lots while undervalueing larger houses/lots.
+- log error is slightly higher in units that have 5-6 bedrooms or bathrooms.
+
+### Recommendations
+The zestimate team should focus on improving the zestimate using some of the drivers I outlined, and try to further encorperate these values into the zestimate moving forward.
 
 # Table of contents
 <!-- Add a table of contents for your project -->
