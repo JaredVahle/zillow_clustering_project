@@ -47,16 +47,16 @@ This is a place holder for when I have key takeaways and fingings
 
 | Feature                    | Datatype                | Definition   |
 |:---------------------------|:------------------------|:-------------|
-| parcelid| 55513 non-null: int64   |individual id for unique properties|
-| baths| 55513 non-null: float64 |# of bathrooms a property has|
-| beds| 55513 non-null: float64 |# of bedrooms a property has|
-| sqft| 55513 non-null: float64 |calculated square footage of home|
+| parcelid| 55513 non-null: int64|individual id for unique properties|
+| baths| 55513 non-null: float64|# of bathrooms a property has|
+| beds| 55513 non-null: float64|# of bedrooms a property has|
+| sqft| 55513 non-null: float64|calculated square footage of home|
 | latitude| 55513 non-null: float64 |where the porperty is located in refrence to latitude|
 | longitude| 55513 non-null: float64 |where the porperty is located in refrence to  longitude|
 | lotsizesquarefeet| 55513 non-null: float64 |the square footage of the land the propety resides on|
-| regionidcity| 55513 non-null: object  |unique identifier for cities the property is in|
-| regionidzip| 55513 non-null: object  |uniques identifier for the zip code the propert resides in|
-| year_built| 55513 non-null: float64 |year the property was built|
+| regionidcity| 55513 non-null: object|unique identifier for cities the property is in|
+| regionidzip| 55513 non-null: object|uniques identifier for the zip code the propert resides in|
+| year_built| 55513 non-null: float64|year the property was built|
 | structuretaxvaluedollarcnt| 55513 non-null: float64 |the estimated tax value of the property itself|
 | tax_value| 55513 non-null: float64 |the estimated tax value of the property|
 | landtaxvaluedollarcnt| 55513 non-null: float64 |the estimated tax value of the land the property is on|
@@ -64,16 +64,14 @@ This is a place holder for when I have key takeaways and fingings
 | logerror| 55513 non-null: float64 |the target of this project (error produced in predictions)|
 | transactiondate| 55513 non-null: object  |date property was sold|
 | propertylandusedesc| 55513 non-null: object  |what the property is listed as ex.(Single family)|
-| LA| 55513 non-null: uint8   |whether or not the propert resides in LA county|
-| Orange| 55513 non-null: uint8   |whether or not the propert resides in Orange county|
-| Ventura| 55513 non-null: uint8   |whether or not the propert resides in Ventura county|
-| county| 55513 non-null: object  |The county the resident resides in|
+| LA| 55513 non-null: uint8|whether or not the propert resides in LA county|
+| Orange| 55513 non-null: uint8|whether or not the propert resides in Orange county|
+| Ventura| 55513 non-null: uint8|whether or not the propert resides in Ventura county|
+| county| 55513 non-null: object|The county the resident resides in|
 | taxrate| 55513 non-null: float64 |gives the tax rate for each property|
 | structure_dollar_per_sqft| 55513 non-null: float64 |gives the structures cost per square foot|
 | land_dollar_per_sqft| 55513 non-null: float64 |gives the land cost per square foot|
 
-# Link to Trello Board
-https://trello.com/b/nvbynjZ6/clustering-zillow-data
 
 # Data Science Pipeline
 [(Back to top)](#table-of-contents)
@@ -165,36 +163,56 @@ At this point our data has
 We will now split our data into train, validate, and split.
 - Split the data into 60% train, 20% validate, 20% test
 
-Time to explore
-
-
 
 ### Explore
 [(Back to top)](#table-of-contents)
 <!-- Describe your explore process -->
 
+- Visualized using both univariate analysis and bivariate
+- Ran five statistical test comparing different variables and log error
+- Created three different clusters 
+    - Cluster 1: uses longitude and latitude
+    - Cluster 2: uses longitude latitude and square footage
+    - Cluster 3: uses bedroom bathroom and tax value
+
 ### Model
 [(Back to top)](#table-of-contents)
 <!-- Describe your modeling process -->
+Model types: linear regression, lasso lars, tweedie, polynomial 3rd degree
+**Winning model: linear regression**
+Created 4 different models using bathrooms,bedrooms,square_footage,cluster 2, and cluster 3 as features.
+Baseline RMSE on test data: 0.1656757
+**My models RMSE on test data: 0.1656116**
 
 ### Evaluate
 [(Back to top)](#table-of-contents)
 <!-- Describe your evaluation process -->
-
+I gathered the RMSE and R^2 for all of my models and put them into dataframes for easy comparison.
 
 # Conclusion
 [(Back to top)](#table-of-contents)
 <!-- Wrap up with conclusions and takeaways -->
-
+- We were able to find some indicators of of log error but will definetly need more time to create a better model.
+- the model beat the baseline by a slim margin.
+- Both my model and the baseline had an **RMSE of ~.1656**
 
 # Given More Time
 [(Back to top)](#table-of-contents)
 <!-- LET THEM KNOW WHAT YOU WISH YOU COULD HAVE DONE-->
-
+- I could spend 1000 hours and still continue learning new things about this data.
+- I would try to make clusters that target on a neighborhood level, seeking values that the homes on the same street sold for.
+- I would also improve on my models using my current model as the new baseline.
 # Recreate This Project
 [(Back to top)](#table-of-contents)
 <!-- How can they do what you do?-->
-
+**To Recreate This Project**
+- Create your own username and password in order to access the Codeup SQL database.
+- I created a wrangle file that will do all of the acquir/prepare stage.
+- Use the seed 174
+- Importing all of my modules and utilizing them will help expadite the process.
 # Footer
 [(Back to top)](#table-of-contents)
 <!-- LET THEM KNOW WHO YOU ARE (linkedin links) close with a joke. -->
+You can find the rest of my work here: https://github.com/JaredVahle
+Add me on Linkedin here: https://www.linkedin.com/in/jared-vahle-data-science/
+Check out my Trello board here: https://trello.com/b/nvbynjZ6/clustering-zillow-data
