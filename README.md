@@ -1,8 +1,6 @@
 
 # Beating the Zestimate
 
-This project is for my data science team, I am trying to create a model that will beat out the zillows Zestimate tool.
-
 <!-- Add banner here -->
 ![Banner](https://webassets.inman.com/wp-content/uploads/2014/03/zillow-logo-use-this-one.png)
 
